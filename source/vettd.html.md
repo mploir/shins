@@ -17,7 +17,7 @@ headingLevel: 2
 
 ---
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation">Vettd Data Observatory (VDO) API Documentation v0.9.0.0</h1>
+<h1 id="VDO">Vettd Data Observatory (VDO) API Documentation v0.9.0.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -34,11 +34,11 @@ Base URLs:
 * API Key (Bearer)
     - Parameter Name: **Authorization**, in: header. Please insert JWT with Bearer into field. You can use the POST /vdo/auth call to get the token. 
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Download">Download</h1>
+<h1 id="VDO-Download">Download</h1>
 
-## VdoV1StorageDatasetsByDatasetidDownloadGet
+## GetDownloadDataset
 
-<a id="opIdVdoV1StorageDatasetsByDatasetidDownloadGet"></a>
+<a id="opIdGetDownloadDataset"></a>
 
 > Code samples
 
@@ -181,7 +181,7 @@ func main() {
 
 *Download all assets of a dataset as a zip file*
 
-<h3 id="vdov1storagedatasetsbydatasetiddownloadget-parameters">Parameters</h3>
+<h3 id="GetDownloadDataset-parameters">Parameters</h3>
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -228,7 +228,7 @@ func main() {
 }
 ```
 
-<h3 id="vdov1storagedatasetsbydatasetiddownloadget-responses">Responses</h3>
+<h3 id="GetDownloadDataset-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -239,9 +239,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageAssetsByAssetidDownloadGet
+## GetDownloadAssets
 
-<a id="opIdVdoV1StorageAssetsByAssetidDownloadGet"></a>
+<a id="opIdGetDownloadAssets"></a>
 
 > Code samples
 
@@ -384,7 +384,7 @@ func main() {
 
 *Download an Asset by its Id*
 
-<h3 id="vdov1storageassetsbyassetiddownloadget-parameters">Parameters</h3>
+<h3 id="GetDownloadAsset-parameters">Parameters</h3>
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -431,7 +431,7 @@ func main() {
 }
 ```
 
-<h3 id="vdov1storageassetsbyassetiddownloadget-responses">Responses</h3>
+<h3 id="GetDownloadAsset-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -442,11 +442,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Entity">Entity</h1>
+<h1 id="VDO-Entity">Entity</h1>
 
-## VdoV1EntitiesGet
+## EntitiesGet
 
-<a id="opIdVdoV1EntitiesGet"></a>
+<a id="opIdEntitiesGet"></a>
 
 > Code samples
 
@@ -655,9 +655,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1EntitiesPost
+## EntitiesPost
 
-<a id="opIdVdoV1EntitiesPost"></a>
+<a id="opIdEntitiesPost"></a>
 
 > Code samples
 
@@ -868,11 +868,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Information">Information</h1>
+<h1 id="VDO-Information">Information</h1>
 
-## VdoV1InfoPingGet
+## InfoPingGet
 
-<a id="opIdVdoV1InfoPingGet"></a>
+<a id="opIdInfoPingGet"></a>
 
 > Code samples
 
@@ -1044,9 +1044,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1InfoVersionGet
+## InfoVersionGet
 
-<a id="opIdVdoV1InfoVersionGet"></a>
+<a id="opIdInfoVersionGet"></a>
 
 > Code samples
 
@@ -1252,9 +1252,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1InfoVersionAdminGet
+## InfoVersionAdminGet
 
-<a id="opIdVdoV1InfoVersionAdminGet"></a>
+<a id="opIdInfoVersionAdminGet"></a>
 
 > Code samples
 
@@ -1460,9 +1460,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1InfoClaimsGet
+## InfoClaimsGet
 
-<a id="opIdVdoV1InfoClaimsGet"></a>
+<a id="opIdInfoClaimsGet"></a>
 
 > Code samples
 
@@ -1612,11 +1612,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Job">Job</h1>
+<h1 id="VDO-Job">Job</h1>
 
-## VdoV1JobsGet
+## JobsGet
 
-<a id="opIdVdoV1JobsGet"></a>
+<a id="opIdJobsGet"></a>
 
 > Code samples
 
@@ -1871,9 +1871,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1JobsPost
+## JobsPost
 
-<a id="opIdVdoV1JobsPost"></a>
+<a id="opIdJobsPost"></a>
 
 > Code samples
 
@@ -2092,9 +2092,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1JobsByJobidGet
+## JobsByJobidGet
 
-<a id="opIdVdoV1JobsByJobidGet"></a>
+<a id="opIdJobsByJobidGet"></a>
 
 > Code samples
 
@@ -2327,9 +2327,9 @@ Check the status of a specific job as well as details of what assets/datasets wh
 This operation does not require authentication
 </aside>
 
-## VdoV1JobsByJobidWorkflowGet
+## JobsByJobidWorkflowGet
 
-<a id="opIdVdoV1JobsByJobidWorkflowGet"></a>
+<a id="opIdJobsByJobidWorkflowGet"></a>
 
 > Code samples
 
@@ -2550,9 +2550,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1JobsByJobidProcessGet
+## JobsByJobidProcessGet
 
-<a id="opIdVdoV1JobsByJobidProcessGet"></a>
+<a id="opIdJobsByJobidProcessGet"></a>
 
 > Code samples
 
@@ -2725,9 +2725,9 @@ true
 This operation does not require authentication
 </aside>
 
-## VdoV1JobsByJobidCompletePost
+## JobsByJobidCompletePost
 
-<a id="opIdVdoV1JobsByJobidCompletePost"></a>
+<a id="opIdJobsByJobidCompletePost"></a>
 
 > Code samples
 
@@ -2925,11 +2925,11 @@ true
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-PermissionTesting">PermissionTesting</h1>
+<h1 id="VDO-PermissionTesting">PermissionTesting</h1>
 
-## VdoV1SecuritycheckNoneGet
+## SecuritycheckNoneGet
 
-<a id="opIdVdoV1SecuritycheckNoneGet"></a>
+<a id="opIdSecuritycheckNoneGet"></a>
 
 > Code samples
 
@@ -3112,9 +3112,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1SecuritycheckReadGet
+## SecuritycheckReadGet
 
-<a id="opIdVdoV1SecuritycheckReadGet"></a>
+<a id="opIdSecuritycheckReadGet"></a>
 
 > Code samples
 
@@ -3297,9 +3297,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1SecuritycheckWriteGet
+## SecuritycheckWriteGet
 
-<a id="opIdVdoV1SecuritycheckWriteGet"></a>
+<a id="opIdSecuritycheckWriteGet"></a>
 
 > Code samples
 
@@ -3482,9 +3482,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1SecuritycheckReadwriteGet
+## SecuritycheckReadwriteGet
 
-<a id="opIdVdoV1SecuritycheckReadwriteGet"></a>
+<a id="opIdSecuritycheckReadwriteGet"></a>
 
 > Code samples
 
@@ -3667,9 +3667,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1SecuritycheckErrorGet
+## SecuritycheckErrorGet
 
-<a id="opIdVdoV1SecuritycheckErrorGet"></a>
+<a id="opIdSecuritycheckErrorGet"></a>
 
 > Code samples
 
@@ -3819,11 +3819,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Storage">Storage</h1>
+<h1 id="VDO-Storage">Storage</h1>
 
-## VdoV1StorageAssetsGet
+## StorageAssetsGet
 
-<a id="opIdVdoV1StorageAssetsGet"></a>
+<a id="opIdStorageAssetsGet"></a>
 
 > Code samples
 
@@ -4024,9 +4024,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageAssetsPost
+## StorageAssetsPost
 
-<a id="opIdVdoV1StorageAssetsPost"></a>
+<a id="opIdStorageAssetsPost"></a>
 
 > Code samples
 
@@ -4229,9 +4229,9 @@ Zip files are allowed and will be unzipped on upload*
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageAssetsByAssetidGet
+## StorageAssetsByAssetidGet
 
-<a id="opIdVdoV1StorageAssetsByAssetidGet"></a>
+<a id="opIdStorageAssetsByAssetidGet"></a>
 
 > Code samples
 
@@ -4416,9 +4416,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageDatasetsGet
+## StorageDatasetsGet
 
-<a id="opIdVdoV1StorageDatasetsGet"></a>
+<a id="opIdStorageDatasetsGet"></a>
 
 > Code samples
 
@@ -4616,9 +4616,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageDatasetsPost
+## StorageDatasetsPost
 
-<a id="opIdVdoV1StorageDatasetsPost"></a>
+<a id="opIdStorageDatasetsPost"></a>
 
 > Code samples
 
@@ -4817,9 +4817,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1StorageDatasetsByDatasetidAssetsGet
+## StorageDatasetsByDatasetidAssetsGet
 
-<a id="opIdVdoV1StorageDatasetsByDatasetidAssetsGet"></a>
+<a id="opIdStorageDatasetsByDatasetidAssetsGet"></a>
 
 > Code samples
 
@@ -5021,11 +5021,11 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-User">User</h1>
+<h1 id="VDO-User">User</h1>
 
-## VdoV1UsersPost
+## UsersPost
 
-<a id="opIdVdoV1UsersPost"></a>
+<a id="opIdUsersPost"></a>
 
 > Code samples
 
@@ -5230,11 +5230,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-WorkFlow">WorkFlow</h1>
+<h1 id="VDO-WorkFlow">WorkFlow</h1>
 
-## VdoV1WorkflowGet
+## WorkflowGet
 
-<a id="opIdVdoV1WorkflowGet"></a>
+<a id="opIdWorkflowGet"></a>
 
 > Code samples
 
@@ -5430,9 +5430,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1WorkflowByWorkflowidGet
+## WorkflowByWorkflowidGet
 
-<a id="opIdVdoV1WorkflowByWorkflowidGet"></a>
+<a id="opIdWorkflowByWorkflowidGet"></a>
 
 > Code samples
 
@@ -5651,9 +5651,9 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## VdoV1WorkflowByWorkflowidContentGet
+## WorkflowByWorkflowidContentGet
 
-<a id="opIdVdoV1WorkflowByWorkflowidContentGet"></a>
+<a id="opIdWorkflowByWorkflowidContentGet"></a>
 
 > Code samples
 
@@ -5872,11 +5872,11 @@ func main() {
 This operation does not require authentication
 </aside>
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-WorkFlowTemplate">WorkFlowTemplate</h1>
+<h1 id="VDO-WorkFlowTemplate">WorkFlowTemplate</h1>
 
-## VdoV1TemplatesGet
+## TemplatesGet
 
-<a id="opIdVdoV1TemplatesGet"></a>
+<a id="opIdTemplatesGet"></a>
 
 > Code samples
 
@@ -6125,9 +6125,9 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## VdoV1TemplatesByWorkflowtemplateidGet
+## TemplatesByWorkflowtemplateidGet
 
-<a id="opIdVdoV1TemplatesByWorkflowtemplateidGet"></a>
+<a id="opIdTemplatesByWorkflowtemplateidGet"></a>
 
 > Code samples
 
