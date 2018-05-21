@@ -1,3 +1,4 @@
+
 ---
 title: Vettd Data Observatory (VDO) API Documentation
 language_tabs:
@@ -17,7 +18,9 @@ headingLevel: 2
 
 ---
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation">Vettd Data Observatory (VDO) API Documentation v0.9.0.0</h1>
+
+
+<h1 id="Vettd-Data-Observatory-VDO-API-Documentation">Vettd Data Observatory VDO API Documentation v0.9.0.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -48,37 +51,37 @@ We can also lock down the access even further if you provide a while list of val
 |Workflow|A series of 1 or more tasks to perform. Workflows can call other workflows (building complex series of tasks)|
 |Job|An instance of workflow.  When you tell the API to do perform some workflow it creates a JobId which is used to check on the status of the job and retrieve the output (an asset or a dataset) of what the job produced.| 
 
-### Concept 1: What is data
+### :ballot_box_with_check: Concept 1: What is data
 
 The system was built to be able to handle a variety of incoming data types (text files, pdfs, word docs, etc.…).  These files are saved as assets and often time converted down to text for further processing.  Each step that is taken during this processing will produce either an Asset or a Dataset (a group of assets) for easy review.
 
-### Concept 2: What is a Workflow
+### :ballot_box_with_check: Concept 2: What is a Workflow
 
 Workflows are just a series of steps you are asking our system to perform. You don’t care that the work is broken down into X number of steps, all that you need to be concerned about is that you ask it to perform a high-level task by giving in a reference to some input data and as the result it produces some output data. In the background workflows can reference other workflows so you can build very complex processing, but still the consuming user only cares about the input and the output.  Vettd will work with you and create custom workflows for your company, then all you need to do is call and consume the results
 
-### Concept 3: What is a Job
+### :ballot_box_with_check: Concept 3: What is a Job
 
 A job is just an instance of workflow in action. This allows you to call a workflow multiple times and still keep track of each individual job. We keep track of the instance by a Job Id.  The time it takes to process the job depends on the complexity of the workflow and the volume of data the tasks have to process.
 
 
-# Basic Usage Steps
+# Example: Basic Usage  Steps
 
 ![sampe steps](source/images/samplesteps.png)
 
 
-|Step|Name|Call|
+|Step|Name|Call :link:|
 |---|---|---|
 |1|Authenticate| <a href="#auth-call">Jump to Call</a>|
 |2|List Workflows| <a href="#list-avaliable-workflows">Jump to Call</a>|
 |3|Upload Files| <a href="#upload-files--assets-and-datasets-">Jump to Call</a>|
 |4|Call Workflow/ Add Job| <a href="#add-job">Jump to Call</a>|
 |5|Retrieve Job Results| <a href="#get-job">Jump to Call</a>|
-|6|Download Results| <a href="#download-asset">Call Asset</a> or <a href="#download-dataset">Call Dataset</a>|
+|6|Download Results| <a href="#download-asset">Jump to Call Asset</a> or <a href="#download-dataset">Jump to Call Dataset</a>|
 
 
 
 ![sampe steps](source/images/pdf.png)
-[Download New User Getting Started Guide (PDF)](source/docs/VDO_API_NEW_User_Guide.pdf)
+[Download New User Getting Started Guide - PDF](source/docs/VDO_API_NEW_User_Guide.pdf)
 
 The above guide will walk you through a basic creation of job using a workflow and files you upload.
 
@@ -90,10 +93,7 @@ The VDO API is JSON based. In order to make an authenticated call to the API, yo
 
 To get a token make the following call:
 
-
 ## Authenticate
-
-<a id="opIdauth"></a>
 
 > Code samples
 
@@ -105,43 +105,6 @@ curl -X POST https://vettd.auth0.com/oauth/token \
   -d 'grant_type=client_credentials&audience=api.vettd.com%2Fvdo&client_id={CLIENT_ID_HERE}&client_secret={CLIENT_SECRET_HERE}
 
 ```
-
-```http
-see shell
-
-```
-
-```javascript
-see shell
-
-```
-
-```javascript--nodejs
-see shell
-
-```
-
-```ruby
-see shell
-
-```
-
-```python
-see shell
-
-```
-
-```java
-see shell
-
-```
-
-```go
-see shell
-
-```
-
-
 
 `POST https://vettd.auth0.com/oauth/token`
 
@@ -170,7 +133,7 @@ see shell
 
 # Storage
 
-## Upload Files (Assets and Datasets)
+## Upload Files - Assets and Datasets
 
 <a id="opIdVdoV1StorageAssetsPost"></a>
 
@@ -5140,4 +5103,3 @@ This operation does not require authentication
 |name|string|false|none|none|
 |workflow|object|false|read-only|none|
 |version|integer(int32)|false|none|none|
-
