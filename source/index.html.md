@@ -63,17 +63,24 @@ A job is just an instance of workflow in action. This allows you to call a workf
 
 # Basic Usage Steps
 
-![alt text](source/images/samplesteps.png)
+![sampe steps](source/images/samplesteps.png)
 
 
 |Step|Name|Call|
 |---|---|---|
-|1|Authenticate| blah|
+|1|Authenticate| <a href="#auth-call">Jump to Call</a>|
 |2|List Workflows| <a href="#list-avaliable-workflows">Jump to Call</a>|
-|3|Upload Files| blah|
-|4|Call Workflow| blah|
-|5|Retrieve Job Results| blah|
-|6|Download Results| blah|
+|3|Upload Files| <a href="#upload-files--assets-and-datasets-">Jump to Call</a>|
+|4|Call Workflow/ Add Job| <a href="#add-job">Jump to Call</a>|
+|5|Retrieve Job Results| <a href="#get-job">Jump to Call</a>|
+|6|Download Results| <a href="#download-asset">Call Asset</a> or <a href="#download-dataset">Call Dataset</a>|
+
+
+
+![sampe steps](source/images/pdf.png)
+[Download New User Getting Started Guide (PDF)](source/docs/VDO_API_NEW_User_Guide.pdf)
+
+The above guide will walk you through a basic creation of job using a workflow and files you upload.
 
 
 
@@ -82,6 +89,8 @@ A job is just an instance of workflow in action. This allows you to call a workf
 The VDO API is JSON based. In order to make an authenticated call to the API, you must include your access token with the call. OAuth2 uses a BEARER token that is passed along in an Authorization header.
 
 To get a token make the following call:
+
+## Authenticate
 
 > Code samples
 
@@ -120,216 +129,6 @@ curl -X POST https://vettd.auth0.com/oauth/token \
 
 
 # Storage
-
-## Asset List
-
-<a id="opIdVdoV1StorageAssetsGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/storage/assets \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-
-```
-
-```http
-GET //vdo/v1/storage/assets HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/assets',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/assets',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/storage/assets',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/storage/assets', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/assets");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/storage/assets`
-
-*List of all the assets/files you have uploaded to Vettd.*
-
-<h3 id="vdov1storageassetsget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-<h3 id="vdov1storageassetsget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<h3 id="vdov1storageassetsget-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
-|» id|string(uuid)|false|none|none|
-|» createdate|string(date-time)|false|none|none|
-|» updatedate|string(date-time)|false|none|none|
-|» datatype|string|false|none|none|
-|» name|string|false|none|none|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
 
 ## Upload Files (Assets and Datasets)
 
@@ -736,6 +535,218 @@ func main() {
 <!--<aside class="success">
 This operation does not require authentication
 </aside>-->
+
+## List Assets
+
+<a id="opIdVdoV1StorageAssetsGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/storage/assets \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/storage/assets HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/assets',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/assets',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/storage/assets',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/storage/assets', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/assets");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/storage/assets`
+
+*List of all the assets/files you have uploaded to Vettd.*
+
+<h3 id="vdov1storageassetsget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+<h3 id="vdov1storageassetsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<h3 id="vdov1storageassetsget-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
+|» id|string(uuid)|false|none|none|
+|» createdate|string(date-time)|false|none|none|
+|» updatedate|string(date-time)|false|none|none|
+|» datatype|string|false|none|none|
+|» name|string|false|none|none|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+
 
 ## Single Dataset
 
@@ -1364,7 +1375,7 @@ This operation does not require authentication
 </aside>-->
 
 
-##  Download Dataset
+## Download Dataset
 
 <a id="opIdVdoV1StorageDatasetsByDatasetidDownloadGet"></a>
 
@@ -1750,7 +1761,7 @@ This operation does not require authentication
 
 # Job 
 
-## Select Job
+## List Jobs
 
 <a id="opIdVdoV1JobsGet"></a>
 
@@ -1968,7 +1979,7 @@ Status Code **200**
 |» userid|string(uuid)|false|none|none|
 |» ouputypename|string|false|none|none|
 |» ouputvalue|string|false|none|none|
-|» workFlow|[WorkFlow](#schemaworkflow)|false|none|none|
+|» workFlow|[WorkFlowResponse](#schemaworkflowresponse)|false|none|none|
 |»» id|string(uuid)|false|none|none|
 |»» name|string|false|none|none|
 |»» workflowtemplateid|string(uuid)|false|none|none|
@@ -2211,7 +2222,7 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
-## Select Single Job
+## Get Job
 
 <a id="opIdVdoV1JobsByJobidGet"></a>
 
@@ -3479,469 +3490,6 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
-# WorkFlowTemplate
-
-## Select Template
-
-<a id="opIdVdoV1TemplatesGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/templates \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-
-```
-
-```http
-GET //vdo/v1/templates HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/templates',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/templates',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/templates',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/templates', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/templates");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/templates", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-*List of workflow templates*
-
-`GET /vdo/v1/templates`
-
-<h3 id="vdov1templatesget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "string",
-    "name": "string",
-    "isservice": true,
-    "iteratortype": 0,
-    "inputs": [
-      {
-        "id": "string",
-        "name": "string",
-        "typename": "string",
-        "iocounter": 0
-      }
-    ],
-    "children": [
-      null
-    ],
-    "outputs": [
-      {
-        "id": "string",
-        "name": "string",
-        "typename": "string",
-        "iocounter": 0
-      }
-    ]
-  }
-]
-```
-
-<h3 id="vdov1templatesget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<h3 id="vdov1templatesget-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)]|false|none|none|
-|» id|string(uuid)|false|none|none|
-|» name|string|false|none|none|
-|» isservice|boolean|false|none|none|
-|» iteratortype|integer(int32)|false|none|none|
-|» inputs|[[WorkFlowIODTO](#schemaworkflowiodto)]|false|none|none|
-|»» id|string(uuid)|false|none|none|
-|»» name|string|false|none|none|
-|»» typename|string|false|none|none|
-|»» iocounter|integer(int32)|false|none|none|
-|» children|[[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)]|false|none|none|
-|» outputs|[[WorkFlowIODTO](#schemaworkflowiodto)]|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|iteratortype|0|
-|iteratortype|1|
-|iteratortype|2|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Get Template Details
-
-<a id="opIdVdoV1TemplatesByWorkflowtemplateidGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/templates/{workflowtemplateid} \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-
-```
-
-```http
-GET //vdo/v1/templates/{workflowtemplateid} HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/templates/{workflowtemplateid}',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/templates/{workflowtemplateid}',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/templates/{workflowtemplateid}',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/templates/{workflowtemplateid}', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/templates/{workflowtemplateid}");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/templates/{workflowtemplateid}", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-*Get single template with full children details*
-
-`GET /vdo/v1/templates/{workflowtemplateid}`
-
-<h3 id="vdov1templatesbyworkflowtemplateidget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|workflowtemplateid|path|string(uuid)|true|none|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "name": "string",
-  "isservice": true,
-  "iteratortype": 0,
-  "inputs": [
-    {
-      "id": "string",
-      "name": "string",
-      "typename": "string",
-      "iocounter": 0
-    }
-  ],
-  "children": [
-    null
-  ],
-  "outputs": [
-    {
-      "id": "string",
-      "name": "string",
-      "typename": "string",
-      "iocounter": 0
-    }
-  ]
-}
-```
-
-```json
-{
-  "id": "string",
-  "name": "string",
-  "isservice": true,
-  "iteratortype": 0,
-  "inputs": [
-    {
-      "id": "string",
-      "name": "string",
-      "typename": "string",
-      "iocounter": 0
-    }
-  ],
-  "children": [
-    null
-  ],
-  "outputs": [
-    {
-      "id": "string",
-      "name": "string",
-      "typename": "string",
-      "iocounter": 0
-    }
-  ]
-}
-```
-
-<h3 id="vdov1templatesbyworkflowtemplateidget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-
 # Information
 
 ## Ping
@@ -4710,6 +4258,43 @@ This operation does not require authentication
 
 # Schemas
 
+## ApplicationVersion
+
+<a id="schemaapplicationversion"></a>
+
+```json
+{
+  "number": "string",
+  "release_date": "2018-05-15T17:51:34Z",
+  "lastRestartTime": "string",
+  "redisDBNumber": "string",
+  "environment": "string",
+  "token_information": {
+    "companyId": "string",
+    "userId": "string",
+    "auth0UserId": "string",
+    "issuer": "string",
+    "isUser": true,
+    "userEmail": "string",
+    "roles": [
+      "string"
+    ]
+  }
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|number|string|false|none|none|
+|release_date|string(date-time)|false|none|none|
+|lastRestartTime|string|false|none|none|
+|redisDBNumber|string|false|none|none|
+|environment|string|false|none|none|
+|token_information|[TokenInformation](#schematokeninformation)|false|none|none|
+
 ## AuthenicationResponse
 
 <a id="schemaauthenticate"></a>
@@ -4733,6 +4318,133 @@ This operation does not require authentication
 |scope|string|false|none|none|
 |expires_in|integer|true|read-only|none|
 |token_type|string(int32)|true|none|none|
+
+
+
+
+## AssetDTO
+
+<a id="schemaassetdto"></a>
+
+```json
+{
+  "id": "string",
+  "createdate": "2018-05-15T17:51:34Z",
+  "updatedate": "2018-05-15T17:51:34Z",
+  "datatype": "string",
+  "name": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|none|
+|createdate|string(date-time)|false|none|none|
+|updatedate|string(date-time)|false|none|none|
+|datatype|string|false|none|none|
+|name|string|false|none|none|
+
+
+## AssetUploadResponse
+
+<a id="schemaassetuploadresponse"></a>
+
+```json
+{
+  "datasetid": "string",
+  "datasetname": "string",
+  "assets": [
+    {
+      "id": "string",
+      "createdate": "2018-05-15T17:51:34Z",
+      "updatedate": "2018-05-15T17:51:34Z",
+      "datatype": "string",
+      "name": "string"
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|datasetid|string(uuid)|false|none|none|
+|datasetname|string|false|none|none|
+|assets|[[AssetDTO](#schemaassetdto)]|false|none|none|
+
+## ClientAsUser
+
+<a id="schemaclientasuser"></a>
+
+```json
+{
+  "thirdpartyid": "string",
+  "companyname": "string",
+  "username": "string",
+  "email": "string",
+  "workflowids": [
+    "string"
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|thirdpartyid|string|false|none|none|
+|companyname|string|false|none|none|
+|username|string|false|none|none|
+|email|string|false|none|none|
+|workflowids|[string]|false|none|none|
+
+## DataSetDTO
+
+<a id="schemadatasetdto"></a>
+
+```json
+{
+  "id": "string",
+  "createdate": "2018-05-15T17:51:34Z",
+  "name": "string",
+  "datatype": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|none|
+|createdate|string(date-time)|false|none|none|
+|name|string|false|none|none|
+|datatype|string|false|none|none|
+
+## DataSetCreateRequest
+
+<a id="schemadatasetcreaterequest"></a>
+
+```json
+{
+  "name": "string",
+  "datatype": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|datatype|string|false|none|none|
 
 
 ## FileResult
@@ -4792,30 +4504,6 @@ This operation does not require authentication
 |tag|[StringSegment](#schemastringsegment)|false|none|none|
 |isWeak|boolean|false|read-only|none|
 
-## StringSegment
-
-<a id="schemastringsegment"></a>
-
-```json
-{
-  "buffer": "string",
-  "offset": 0,
-  "length": 0,
-  "value": "string",
-  "hasValue": true
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|buffer|string|false|read-only|none|
-|offset|integer(int32)|false|read-only|none|
-|length|integer(int32)|false|read-only|none|
-|value|string|false|read-only|none|
-|hasValue|boolean|false|read-only|none|
 
 ## EntityDataSaveRequest
 
@@ -4864,27 +4552,6 @@ This operation does not require authentication
 |---|---|---|---|---|
 |data|string|false|none|none|
 |type|string|false|none|none|
-
-## UniqueIdentifier
-
-<a id="schemauniqueidentifier"></a>
-
-```json
-{
-  "id": "string",
-  "datatype": "string",
-  "name": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string(uuid)|false|none|none|
-|datatype|string|false|none|none|
-|name|string|false|none|none|
 
 ## EntityResponse
 
@@ -4948,28 +4615,26 @@ This operation does not require authentication
 |object|object|false|none|none|
 |createDate|string(date-time)|false|none|none|
 
-## ApplicationVersion
 
-<a id="schemaapplicationversion"></a>
+## IFormFile
+
+<a id="schemaiformfile"></a>
 
 ```json
 {
-  "number": "string",
-  "release_date": "2018-05-15T17:51:34Z",
-  "lastRestartTime": "string",
-  "redisDBNumber": "string",
-  "environment": "string",
-  "token_information": {
-    "companyId": "string",
-    "userId": "string",
-    "auth0UserId": "string",
-    "issuer": "string",
-    "isUser": true,
-    "userEmail": "string",
-    "roles": [
+  "contentType": "string",
+  "contentDisposition": "string",
+  "headers": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
       "string"
     ]
-  }
+  },
+  "length": 0,
+  "name": "string",
+  "fileName": "string"
 }
 
 ```
@@ -4978,43 +4643,14 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|number|string|false|none|none|
-|release_date|string(date-time)|false|none|none|
-|lastRestartTime|string|false|none|none|
-|redisDBNumber|string|false|none|none|
-|environment|string|false|none|none|
-|token_information|[TokenInformation](#schematokeninformation)|false|none|none|
+|contentType|string|false|read-only|none|
+|contentDisposition|string|false|read-only|none|
+|headers|object|false|read-only|none|
+|» **additionalProperties**|[string]|false|none|none|
+|length|integer(int64)|false|read-only|none|
+|name|string|false|read-only|none|
+|fileName|string|false|read-only|none|
 
-## TokenInformation
-
-<a id="schematokeninformation"></a>
-
-```json
-{
-  "companyId": "string",
-  "userId": "string",
-  "auth0UserId": "string",
-  "issuer": "string",
-  "isUser": true,
-  "userEmail": "string",
-  "roles": [
-    "string"
-  ]
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|companyId|string(uuid)|false|none|none|
-|userId|string(uuid)|false|none|none|
-|auth0UserId|string|false|none|none|
-|issuer|string|false|none|none|
-|isUser|boolean|false|none|none|
-|userEmail|string|false|none|none|
-|roles|[string]|false|none|none|
 
 ## JobRequest
 
@@ -5114,38 +4750,6 @@ This operation does not require authentication
 |ouputvalue|string|false|none|none|
 |workFlow|[WorkFlow](#schemaworkflow)|false|none|none|
 
-## WorkFlow
-
-<a id="schemaworkflow"></a>
-
-```json
-{
-  "id": "string",
-  "name": "string",
-  "workflowtemplateid": "string",
-  "content": "string",
-  "accesslevel": "string",
-  "createdate": "2018-05-15T17:51:34Z",
-  "version": 0,
-  "ispublished": true,
-  "companyid": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string(uuid)|false|none|none|
-|name|string|false|none|none|
-|workflowtemplateid|string(uuid)|false|none|none|
-|content|string|false|none|none|
-|accesslevel|string|false|none|none|
-|createdate|string(date-time)|false|none|none|
-|version|integer(int32)|false|none|none|
-|ispublished|boolean|false|none|none|
-|companyid|string(uuid)|false|none|none|
 
 ## JobDetails
 
@@ -5261,6 +4865,142 @@ This operation does not require authentication
 |status|string|false|none|none|
 |stepid|string(uuid)|false|none|none|
 
+## StringSegment
+
+<a id="schemastringsegment"></a>
+
+```json
+{
+  "buffer": "string",
+  "offset": 0,
+  "length": 0,
+  "value": "string",
+  "hasValue": true
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buffer|string|false|read-only|none|
+|offset|integer(int32)|false|read-only|none|
+|length|integer(int32)|false|read-only|none|
+|value|string|false|read-only|none|
+|hasValue|boolean|false|read-only|none|
+
+## TokenInformation
+
+<a id="schematokeninformation"></a>
+
+```json
+{
+  "companyId": "string",
+  "userId": "string",
+  "auth0UserId": "string",
+  "issuer": "string",
+  "isUser": true,
+  "userEmail": "string",
+  "roles": [
+    "string"
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|companyId|string(uuid)|false|none|none|
+|userId|string(uuid)|false|none|none|
+|auth0UserId|string|false|none|none|
+|issuer|string|false|none|none|
+|isUser|boolean|false|none|none|
+|userEmail|string|false|none|none|
+|roles|[string]|false|none|none|
+
+## TaskComplete
+
+<a id="schemataskcomplete"></a>
+
+```json
+{
+  "status": "string",
+  "jobId": "string",
+  "jobFlowId": "string",
+  "dataType": "string",
+  "dataId": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|string|false|none|none|
+|jobId|string(uuid)|false|none|none|
+|jobFlowId|string(uuid)|false|none|none|
+|dataType|string|false|none|none|
+|dataId|string|false|none|none|
+
+## UniqueIdentifier
+
+<a id="schemauniqueidentifier"></a>
+
+```json
+{
+  "id": "string",
+  "datatype": "string",
+  "name": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|none|
+|datatype|string|false|none|none|
+|name|string|false|none|none|
+
+
+## WorkFlowResponse
+
+<a id="schemaworkflowresponse"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "workflowtemplateid": "string",
+  "content": "string",
+  "accesslevel": "string",
+  "createdate": "2018-05-15T17:51:34Z",
+  "version": 0,
+  "ispublished": true,
+  "companyid": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|false|none|none|
+|name|string|false|none|none|
+|workflowtemplateid|string(uuid)|false|none|none|
+|content|string|false|none|none|
+|accesslevel|string|false|none|none|
+|createdate|string(date-time)|false|none|none|
+|version|integer(int32)|false|none|none|
+|ispublished|boolean|false|none|none|
+|companyid|string(uuid)|false|none|none|
+
 ## WorkFlowTemplateDTO
 
 <a id="schemaworkflowtemplatedto"></a>
@@ -5337,188 +5077,6 @@ This operation does not require authentication
 |typename|string|false|none|none|
 |iocounter|integer(int32)|false|none|none|
 
-## TaskComplete
-
-<a id="schemataskcomplete"></a>
-
-```json
-{
-  "status": "string",
-  "jobId": "string",
-  "jobFlowId": "string",
-  "dataType": "string",
-  "dataId": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|status|string|false|none|none|
-|jobId|string(uuid)|false|none|none|
-|jobFlowId|string(uuid)|false|none|none|
-|dataType|string|false|none|none|
-|dataId|string|false|none|none|
-
-## AssetDTO
-
-<a id="schemaassetdto"></a>
-
-```json
-{
-  "id": "string",
-  "createdate": "2018-05-15T17:51:34Z",
-  "updatedate": "2018-05-15T17:51:34Z",
-  "datatype": "string",
-  "name": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string(uuid)|false|none|none|
-|createdate|string(date-time)|false|none|none|
-|updatedate|string(date-time)|false|none|none|
-|datatype|string|false|none|none|
-|name|string|false|none|none|
-
-## IFormFile
-
-<a id="schemaiformfile"></a>
-
-```json
-{
-  "contentType": "string",
-  "contentDisposition": "string",
-  "headers": {
-    "property1": [
-      "string"
-    ],
-    "property2": [
-      "string"
-    ]
-  },
-  "length": 0,
-  "name": "string",
-  "fileName": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|contentType|string|false|read-only|none|
-|contentDisposition|string|false|read-only|none|
-|headers|object|false|read-only|none|
-|» **additionalProperties**|[string]|false|none|none|
-|length|integer(int64)|false|read-only|none|
-|name|string|false|read-only|none|
-|fileName|string|false|read-only|none|
-
-## AssetUploadResponse
-
-<a id="schemaassetuploadresponse"></a>
-
-```json
-{
-  "datasetid": "string",
-  "datasetname": "string",
-  "assets": [
-    {
-      "id": "string",
-      "createdate": "2018-05-15T17:51:34Z",
-      "updatedate": "2018-05-15T17:51:34Z",
-      "datatype": "string",
-      "name": "string"
-    }
-  ]
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|datasetid|string(uuid)|false|none|none|
-|datasetname|string|false|none|none|
-|assets|[[AssetDTO](#schemaassetdto)]|false|none|none|
-
-## DataSetDTO
-
-<a id="schemadatasetdto"></a>
-
-```json
-{
-  "id": "string",
-  "createdate": "2018-05-15T17:51:34Z",
-  "name": "string",
-  "datatype": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string(uuid)|false|none|none|
-|createdate|string(date-time)|false|none|none|
-|name|string|false|none|none|
-|datatype|string|false|none|none|
-
-## DataSetCreateRequest
-
-<a id="schemadatasetcreaterequest"></a>
-
-```json
-{
-  "name": "string",
-  "datatype": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|false|none|none|
-|datatype|string|false|none|none|
-
-## ClientAsUser
-
-<a id="schemaclientasuser"></a>
-
-```json
-{
-  "thirdpartyid": "string",
-  "companyname": "string",
-  "username": "string",
-  "email": "string",
-  "workflowids": [
-    "string"
-  ]
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|thirdpartyid|string|false|none|none|
-|companyname|string|false|none|none|
-|username|string|false|none|none|
-|email|string|false|none|none|
-|workflowids|[string]|false|none|none|
 
 ## WorkFlowDTO
 
@@ -5542,4 +5100,461 @@ This operation does not require authentication
 |name|string|false|none|none|
 |workflow|object|false|read-only|none|
 |version|integer(int32)|false|none|none|
+
+
+
+# WorkFlowTemplate
+
+## Select Template
+
+<a id="opIdVdoV1TemplatesGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/templates \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/templates HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/templates',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/templates',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/templates',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/templates', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/templates");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/templates", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+*List of workflow templates*
+
+`GET /vdo/v1/templates`
+
+<h3 id="vdov1templatesget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "isservice": true,
+    "iteratortype": 0,
+    "inputs": [
+      {
+        "id": "string",
+        "name": "string",
+        "typename": "string",
+        "iocounter": 0
+      }
+    ],
+    "children": [
+      null
+    ],
+    "outputs": [
+      {
+        "id": "string",
+        "name": "string",
+        "typename": "string",
+        "iocounter": 0
+      }
+    ]
+  }
+]
+```
+
+<h3 id="vdov1templatesget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<h3 id="vdov1templatesget-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)]|false|none|none|
+|» id|string(uuid)|false|none|none|
+|» name|string|false|none|none|
+|» isservice|boolean|false|none|none|
+|» iteratortype|integer(int32)|false|none|none|
+|» inputs|[[WorkFlowIODTO](#schemaworkflowiodto)]|false|none|none|
+|»» id|string(uuid)|false|none|none|
+|»» name|string|false|none|none|
+|»» typename|string|false|none|none|
+|»» iocounter|integer(int32)|false|none|none|
+|» children|[[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)]|false|none|none|
+|» outputs|[[WorkFlowIODTO](#schemaworkflowiodto)]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|iteratortype|0|
+|iteratortype|1|
+|iteratortype|2|
+
+## Get Template Details
+
+<a id="opIdVdoV1TemplatesByWorkflowtemplateidGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/templates/{workflowtemplateid} \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/templates/{workflowtemplateid} HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/templates/{workflowtemplateid}',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/templates/{workflowtemplateid}',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/templates/{workflowtemplateid}',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/templates/{workflowtemplateid}', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/templates/{workflowtemplateid}");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/templates/{workflowtemplateid}", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+*Get single template with full children details*
+
+`GET /vdo/v1/templates/{workflowtemplateid}`
+
+<h3 id="vdov1templatesbyworkflowtemplateidget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|workflowtemplateid|path|string(uuid)|true|none|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isservice": true,
+  "iteratortype": 0,
+  "inputs": [
+    {
+      "id": "string",
+      "name": "string",
+      "typename": "string",
+      "iocounter": 0
+    }
+  ],
+  "children": [
+    null
+  ],
+  "outputs": [
+    {
+      "id": "string",
+      "name": "string",
+      "typename": "string",
+      "iocounter": 0
+    }
+  ]
+}
+```
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isservice": true,
+  "iteratortype": 0,
+  "inputs": [
+    {
+      "id": "string",
+      "name": "string",
+      "typename": "string",
+      "iocounter": 0
+    }
+  ],
+  "children": [
+    null
+  ],
+  "outputs": [
+    {
+      "id": "string",
+      "name": "string",
+      "typename": "string",
+      "iocounter": 0
+    }
+  ]
+}
+```
+
+<h3 id="vdov1templatesbyworkflowtemplateidget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[WorkFlowTemplateDTO](#schemaworkflowtemplatedto)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
 
