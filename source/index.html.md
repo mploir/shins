@@ -27,15 +27,1344 @@ NOTE: Most calls require the Authorization to be set above. Status Code 401 mean
 
 Base URLs: <a href="/">/</a>
 
+# Onboarding
+You will need six values issued to you by Vettd to begin working with the API. Those values are below with different values to access our TEST and PRODUCTION environments:
+
+|Value|Description|
+|---|---|
+|Client Id	|Your unique Id|
+|Client Secret	|Your unique secret/password|
+API Key	A value passed into every call (except authentication) as second factor of authentication
+NOTE: The client secret and API Key can be reset on demand when needed by contacting Vettd.
+
+The above information should be treated like you would treat a username and password. 
+We can also lock down the access even further if you provide a while list of valid IPs that will be allowed to access the VDO API.  This list can be as a range and/or single IPs.
+
+# High Level API Concepts
+|Value|Definition|
+|---|---|
+|Asset|A physical file.|
+|Dataset|A reference to 1 or more assets.|
+|Workflow|A series of 1 or more tasks to perform. Workflows can call other workflows (building complex series of tasks)|
+|Job|An instance of workflow.  When you tell the API to do perform some workflow it creates a JobId which is used to check on the status of the job and retrieve the output (an asset or a dataset) of what the job produced.| 
+
+### Concept 1: What is data
+
+The system was built to be able to handle a variety of incoming data types (text files, pdfs, word docs, etc.…).  These files are saved as assets and often time converted down to text for further processing.  Each step that is taken during this processing will produce either an Asset or a Dataset (a group of assets) for easy review.
+
+### Concept 2: What is a Workflow
+
+Workflows are just a series of steps you are asking our system to perform. You don’t care that the work is broken down into X number of steps, all that you need to be concerned about is that you ask it to perform a high-level task by giving in a reference to some input data and as the result it produces some output data. In the background workflows can reference other workflows so you can build very complex processing, but still the consuming user only cares about the input and the output.  Vettd will work with you and create custom workflows for your company, then all you need to do is call and consume the results
+
+### Concept 3: What is a Job
+
+A job is just an instance of workflow in action. This allows you to call a workflow multiple times and still keep track of each individual job. We keep track of the instance by a Job Id.  The time it takes to process the job depends on the complexity of the workflow and the volume of data the tasks have to process.
+
+
+# Basic Usage Steps
+
+![alt text](source/images/samplesteps.png)
+
+
+|Step|Name|Call|
+|---|---|---|
+|1|Authenticate| blah|
+|2|List Workflows| <a href="#list-avaliable-workflows">Jump to Call</a>|
+|3|Upload Files| blah|
+|4|Call Workflow| blah|
+|5|Retrieve Job Results| blah|
+|6|Download Results| blah|
+
+
+
 # Authentication
 
 The VDO API is JSON based. In order to make an authenticated call to the API, you must include your access token with the call. OAuth2 uses a BEARER token that is passed along in an Authorization header.
 
-You can obtain a token by calling our authorization providers end point. Contact us to obtain the endpoint and credentials to login.
+To get a token make the following call:
 
-# Download
+> Code samples
 
-##  Dataset
+```shell
+# You can also use wget
+curl -X POST https://vettd.auth0.com/oauth/token \
+  -H 'Cache-Control: no-cache'
+  -H 'Content-Type: application/x-www-form-urlencoded'
+  -d 'grant_type=client_credentials&audience=api.vettd.com%2Fvdo&client_id={CLIENT_ID_HERE}&client_secret={CLIENT_SECRET_HERE}
+
+```
+
+`POST https://vettd.auth0.com/oauth/token`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+    "access_token": "eyJ0eXAiO…DhgE-Q3-cycw",
+    "scope": "",
+    "expires_in": 14400,
+    "token_type": "Bearer"
+}
+
+```
+
+<h3 id="vdov1storagedatasetsbydatasetiddownloadget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[AuthenicationResponse](#schemaauthenticate)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+
+
+# Storage
+
+## Asset List
+
+<a id="opIdVdoV1StorageAssetsGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/storage/assets \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/storage/assets HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/assets',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/assets',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/storage/assets',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/storage/assets', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/assets");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/storage/assets`
+
+*List of all the assets/files you have uploaded to Vettd.*
+
+<h3 id="vdov1storageassetsget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+<h3 id="vdov1storageassetsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<h3 id="vdov1storageassetsget-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
+|» id|string(uuid)|false|none|none|
+|» createdate|string(date-time)|false|none|none|
+|» updatedate|string(date-time)|false|none|none|
+|» datatype|string|false|none|none|
+|» name|string|false|none|none|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Upload Files (Assets and Datasets)
+
+<a id="opIdVdoV1StorageAssetsPost"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST //vdo/v1/storage/assets?assigntodataset=true \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+POST //vdo/v1/storage/assets?assigntodataset=true HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/assets',
+  method: 'post',
+  data: '?assigntodataset=true',
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/assets?assigntodataset=true',
+{
+  method: 'POST',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.post '//vdo/v1/storage/assets',
+  params: {
+  'assigntodataset' => 'boolean'
+}, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.post('//vdo/v1/storage/assets', params={
+  'assigntodataset': 'true'
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/assets?assigntodataset=true");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("POST");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("POST", "//vdo/v1/storage/assets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`POST /vdo/v1/storage/assets`
+
+*Send assets/files into a DataSet 
+Content-Type: application/x-www-form-urlencoded.
+Zip files are allowed and will be unzipped on upload*
+
+<h3 id="vdov1storageassetspost-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|files|query|array[any]|false|Except ZIP or single files (txt, doc, docx, json, pdf)|
+|datatype|query|string|false|Eg. 'JobDescription' or 'Applicant'|
+|datasetname|query|string|false|Optional: Give the name of your DataSet a friendly name - one will be generated if blank|
+|assigntodataset|query|boolean|true|Optional: [Default to true] Usually an asset will be assigned to a dataset - set flag to false to supress connection|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "datasetid": "string",
+  "datasetname": "string",
+  "assets": [
+    {
+      "id": "string",
+      "createdate": "2018-05-15T17:51:34Z",
+      "updatedate": "2018-05-15T17:51:34Z",
+      "datatype": "string",
+      "name": "string"
+    }
+  ]
+}
+```
+
+```json
+{
+  "datasetid": "string",
+  "datasetname": "string",
+  "assets": [
+    {
+      "id": "string",
+      "createdate": "2018-05-15T17:51:34Z",
+      "updatedate": "2018-05-15T17:51:34Z",
+      "datatype": "string",
+      "name": "string"
+    }
+  ]
+}
+```
+
+<h3 id="vdov1storageassetspost-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[AssetUploadResponse](#schemaassetuploadresponse)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Single Asset
+
+<a id="opIdVdoV1StorageAssetsByAssetidGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/storage/assets/{assetid} \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/storage/assets/{assetid} HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/assets/{assetid}',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/assets/{assetid}',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/storage/assets/{assetid}',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/storage/assets/{assetid}', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/assets/{assetid}");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets/{assetid}", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/storage/assets/{assetid}`
+
+*Get Asset details by Id*
+
+<h3 id="vdov1storageassetsbyassetidget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|assetid|path|string(uuid)|true|none|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "createdate": "2018-05-15T17:51:34Z",
+  "updatedate": "2018-05-15T17:51:34Z",
+  "datatype": "string",
+  "name": "string"
+}
+```
+
+```json
+{
+  "id": "string",
+  "createdate": "2018-05-15T17:51:34Z",
+  "updatedate": "2018-05-15T17:51:34Z",
+  "datatype": "string",
+  "name": "string"
+}
+```
+
+<h3 id="vdov1storageassetsbyassetidget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[AssetDTO](#schemaassetdto)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Single Dataset
+
+<a id="opIdVdoV1StorageDatasetsGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/storage/datasets \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/storage/datasets HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/datasets',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/datasets',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/storage/datasets',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/storage/datasets', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/datasets");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/storage/datasets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/storage/datasets`
+
+*Returns list of all datasets*
+
+<h3 id="vdov1storagedatasetsget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "name": "string",
+    "datatype": "string"
+  }
+]
+```
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "name": "string",
+    "datatype": "string"
+  }
+]
+```
+
+<h3 id="vdov1storagedatasetsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<h3 id="vdov1storagedatasetsget-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DataSetDTO](#schemadatasetdto)]|false|none|none|
+|» id|string(uuid)|false|none|none|
+|» createdate|string(date-time)|false|none|none|
+|» name|string|false|none|none|
+|» datatype|string|false|none|none|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Create Empty Dataset
+
+<a id="opIdVdoV1StorageDatasetsPost"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST //vdo/v1/storage/datasets \
+  -H 'Content-Type: application/json-patch+json' \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+POST //vdo/v1/storage/datasets HTTP/1.1
+Host: null
+Content-Type: application/json-patch+json
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Content-Type':'application/json-patch+json',
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/datasets',
+  method: 'post',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+const inputBody = '{
+  "name": "string",
+  "datatype": "string"
+}';
+const headers = {
+  'Content-Type':'application/json-patch+json',
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/datasets',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Content-Type' => 'application/json-patch+json',
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.post '//vdo/v1/storage/datasets',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'Content-Type': 'application/json-patch+json',
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.post('//vdo/v1/storage/datasets', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/datasets");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("POST");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Content-Type": []string{"application/json-patch+json"},
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("POST", "//vdo/v1/storage/datasets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`POST /vdo/v1/storage/datasets`
+
+*Create an empty dataset for future use of adding assets into it*
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "datatype": "string"
+}
+```
+
+<h3 id="vdov1storagedatasetspost-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+|body|body|[DataSetCreateRequest](#schemadatasetcreaterequest)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "datatype": "string",
+  "name": "string"
+}
+```
+
+```json
+{
+  "id": "string",
+  "datatype": "string",
+  "name": "string"
+}
+```
+
+<h3 id="vdov1storagedatasetspost-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Unique identifier for dataset|[UniqueIdentifier](#schemauniqueidentifier)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Error: Dataset not created|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## List Assets in a Dataset
+
+<a id="opIdVdoV1StorageDatasetsByDatasetidAssetsGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/storage/datasets/{datasetid}/assets \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/storage/datasets/{datasetid}/assets HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/storage/datasets/{datasetid}/assets',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/storage/datasets/{datasetid}/assets',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/storage/datasets/{datasetid}/assets',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/storage/datasets/{datasetid}/assets', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/storage/datasets/{datasetid}/assets");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/storage/datasets/{datasetid}/assets", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/storage/datasets/{datasetid}/assets`
+
+*Return Assets associatted with a DataSet*
+
+<h3 id="vdov1storagedatasetsbydatasetidassetsget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetid|path|string(uuid)|true|none|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+```json
+[
+  {
+    "id": "string",
+    "createdate": "2018-05-15T17:51:34Z",
+    "updatedate": "2018-05-15T17:51:34Z",
+    "datatype": "string",
+    "name": "string"
+  }
+]
+```
+
+<h3 id="vdov1storagedatasetsbydatasetidassetsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<h3 id="vdov1storagedatasetsbydatasetidassetsget-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
+|» id|string(uuid)|false|none|none|
+|» createdate|string(date-time)|false|none|none|
+|» updatedate|string(date-time)|false|none|none|
+|» datatype|string|false|none|none|
+|» name|string|false|none|none|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+
+##  Download Dataset
 
 <a id="opIdVdoV1StorageDatasetsByDatasetidDownloadGet"></a>
 
@@ -47,7 +1376,6 @@ curl -X GET //vdo/v1/storage/datasets/{datasetid}/download \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -217,24 +1545,6 @@ func main() {
 }
 ```
 
-```json
-{
-  "contentType": "string",
-  "fileDownloadName": "string",
-  "lastModified": "2018-05-15T17:51:34Z",
-  "entityTag": {
-    "tag": {
-      "buffer": "string",
-      "offset": 0,
-      "length": 0,
-      "value": "string",
-      "hasValue": true
-    },
-    "isWeak": true
-  }
-}
-```
-
 <h3 id="vdov1storagedatasetsbydatasetiddownloadget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -246,7 +1556,7 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
-## Asset
+## Download Asset
 
 <a id="opIdVdoV1StorageAssetsByAssetidDownloadGet"></a>
 
@@ -258,7 +1568,6 @@ curl -X GET //vdo/v1/storage/assets/{assetid}/download \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -428,24 +1737,6 @@ func main() {
 }
 ```
 
-```json
-{
-  "contentType": "string",
-  "fileDownloadName": "string",
-  "lastModified": "2018-05-15T17:51:34Z",
-  "entityTag": {
-    "tag": {
-      "buffer": "string",
-      "offset": 0,
-      "length": 0,
-      "value": "string",
-      "hasValue": true
-    },
-    "isWeak": true
-  }
-}
-```
-
 <h3 id="vdov1storageassetsbyassetiddownloadget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -457,778 +1748,7 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
-
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Information">Information</h1>
-
-## Ping
-
-<a id="opIdVdoV1InfoPingGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/info/ping \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/info/ping HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/info/ping',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/info/ping',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/info/ping',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/info/ping', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/info/ping");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/info/ping", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/info/ping`
-
-*Simple ping to see if API is alive*
-
-<h3 id="vdov1infopingget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-"string"
-```
-
-```json
-"string"
-```
-
-<h3 id="vdov1infopingget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-Ver## VdoV1InfoVersionGet
-
-<a id="opIdVdoV1InfoVersionGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/info/version \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/info/version HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/info/version',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/info/version',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/info/version',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/info/version', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/info/version");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/info/version", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/info/version`
-
-*Version number and release date of VDO API*
-
-<h3 id="vdov1infoversionget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "number": "string",
-  "release_date": "2018-05-15T17:51:34Z",
-  "lastRestartTime": "string",
-  "redisDBNumber": "string",
-  "environment": "string",
-  "token_information": {
-    "companyId": "string",
-    "userId": "string",
-    "auth0UserId": "string",
-    "issuer": "string",
-    "isUser": true,
-    "userEmail": "string",
-    "roles": [
-      "string"
-    ]
-  }
-}
-```
-
-```json
-{
-  "number": "string",
-  "release_date": "2018-05-15T17:51:34Z",
-  "lastRestartTime": "string",
-  "redisDBNumber": "string",
-  "environment": "string",
-  "token_information": {
-    "companyId": "string",
-    "userId": "string",
-    "auth0UserId": "string",
-    "issuer": "string",
-    "isUser": true,
-    "userEmail": "string",
-    "roles": [
-      "string"
-    ]
-  }
-}
-```
-
-<h3 id="vdov1infoversionget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ApplicationVersion](#schemaapplicationversion)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Version
-
-<a id="opIdVdoV1InfoVersionAdminGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/info/version/admin \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/info/version/admin HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/info/version/admin',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/info/version/admin',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/info/version/admin',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/info/version/admin', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/info/version/admin");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/info/version/admin", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/info/version/admin`
-
-*Version number and release date of VDO API*
-
-<h3 id="vdov1infoversionadminget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "number": "string",
-  "release_date": "2018-05-15T17:51:34Z",
-  "lastRestartTime": "string",
-  "redisDBNumber": "string",
-  "environment": "string",
-  "token_information": {
-    "companyId": "string",
-    "userId": "string",
-    "auth0UserId": "string",
-    "issuer": "string",
-    "isUser": true,
-    "userEmail": "string",
-    "roles": [
-      "string"
-    ]
-  }
-}
-```
-
-```json
-{
-  "number": "string",
-  "release_date": "2018-05-15T17:51:34Z",
-  "lastRestartTime": "string",
-  "redisDBNumber": "string",
-  "environment": "string",
-  "token_information": {
-    "companyId": "string",
-    "userId": "string",
-    "auth0UserId": "string",
-    "issuer": "string",
-    "isUser": true,
-    "userEmail": "string",
-    "roles": [
-      "string"
-    ]
-  }
-}
-```
-
-<h3 id="vdov1infoversionadminget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ApplicationVersion](#schemaapplicationversion)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Role Claims
-
-<a id="opIdVdoV1InfoClaimsGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/info/claims \
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/info/claims HTTP/1.1
-Host: null
-
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/info/claims',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/info/claims',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/info/claims',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/info/claims', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/info/claims");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/info/claims", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/info/claims`
-
-<h3 id="vdov1infoclaimsget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-<h3 id="vdov1infoclaimsget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Job">Job</h1>
+# Job 
 
 ## Select Job
 
@@ -1242,7 +1762,6 @@ curl -X GET //vdo/v1/jobs \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -1477,7 +1996,6 @@ curl -X POST //vdo/v1/jobs \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -1705,7 +2223,6 @@ curl -X GET //vdo/v1/jobs/{jobid} \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -1948,7 +2465,6 @@ curl -X GET //vdo/v1/jobs/{jobid}/workflow \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -2179,7 +2695,6 @@ curl -X GET //vdo/v1/jobs/{jobid}/process \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -2351,1257 +2866,7 @@ This operation does not require authentication
 </aside>-->
 
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-Storage">Storage</h1>
-
-## Asset List
-
-<a id="opIdVdoV1StorageAssetsGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/storage/assets \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/storage/assets HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/assets',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/assets',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/storage/assets',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/storage/assets', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/assets");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/storage/assets`
-
-*List of all the assets/files you have uploaded to Vettd.*
-
-<h3 id="vdov1storageassetsget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-<h3 id="vdov1storageassetsget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<h3 id="vdov1storageassetsget-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
-|» id|string(uuid)|false|none|none|
-|» createdate|string(date-time)|false|none|none|
-|» updatedate|string(date-time)|false|none|none|
-|» datatype|string|false|none|none|
-|» name|string|false|none|none|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Upload Files (Assets and Datasets)
-
-<a id="opIdVdoV1StorageAssetsPost"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X POST //vdo/v1/storage/assets?assigntodataset=true \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-POST //vdo/v1/storage/assets?assigntodataset=true HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/assets',
-  method: 'post',
-  data: '?assigntodataset=true',
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/assets?assigntodataset=true',
-{
-  method: 'POST',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.post '//vdo/v1/storage/assets',
-  params: {
-  'assigntodataset' => 'boolean'
-}, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.post('//vdo/v1/storage/assets', params={
-  'assigntodataset': 'true'
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/assets?assigntodataset=true");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("POST");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("POST", "//vdo/v1/storage/assets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`POST /vdo/v1/storage/assets`
-
-*Send assets/files into a DataSet 
-Content-Type: application/x-www-form-urlencoded.
-Zip files are allowed and will be unzipped on upload*
-
-<h3 id="vdov1storageassetspost-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|files|query|array[any]|false|Except ZIP or single files (txt, doc, docx, json, pdf)|
-|datatype|query|string|false|Eg. 'JobDescription' or 'Applicant'|
-|datasetname|query|string|false|Optional: Give the name of your DataSet a friendly name - one will be generated if blank|
-|assigntodataset|query|boolean|true|Optional: [Default to true] Usually an asset will be assigned to a dataset - set flag to false to supress connection|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "datasetid": "string",
-  "datasetname": "string",
-  "assets": [
-    {
-      "id": "string",
-      "createdate": "2018-05-15T17:51:34Z",
-      "updatedate": "2018-05-15T17:51:34Z",
-      "datatype": "string",
-      "name": "string"
-    }
-  ]
-}
-```
-
-```json
-{
-  "datasetid": "string",
-  "datasetname": "string",
-  "assets": [
-    {
-      "id": "string",
-      "createdate": "2018-05-15T17:51:34Z",
-      "updatedate": "2018-05-15T17:51:34Z",
-      "datatype": "string",
-      "name": "string"
-    }
-  ]
-}
-```
-
-<h3 id="vdov1storageassetspost-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[AssetUploadResponse](#schemaassetuploadresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Single Asset
-
-<a id="opIdVdoV1StorageAssetsByAssetidGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/storage/assets/{assetid} \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/storage/assets/{assetid} HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/assets/{assetid}',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/assets/{assetid}',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/storage/assets/{assetid}',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/storage/assets/{assetid}', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/assets/{assetid}");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/storage/assets/{assetid}", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/storage/assets/{assetid}`
-
-*Get Asset details by Id*
-
-<h3 id="vdov1storageassetsbyassetidget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|assetid|path|string(uuid)|true|none|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "createdate": "2018-05-15T17:51:34Z",
-  "updatedate": "2018-05-15T17:51:34Z",
-  "datatype": "string",
-  "name": "string"
-}
-```
-
-```json
-{
-  "id": "string",
-  "createdate": "2018-05-15T17:51:34Z",
-  "updatedate": "2018-05-15T17:51:34Z",
-  "datatype": "string",
-  "name": "string"
-}
-```
-
-<h3 id="vdov1storageassetsbyassetidget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[AssetDTO](#schemaassetdto)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Single Dataset
-
-<a id="opIdVdoV1StorageDatasetsGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/storage/datasets \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/storage/datasets HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/datasets',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/datasets',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/storage/datasets',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/storage/datasets', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/datasets");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/storage/datasets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/storage/datasets`
-
-*Returns list of all datasets*
-
-<h3 id="vdov1storagedatasetsget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "name": "string",
-    "datatype": "string"
-  }
-]
-```
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "name": "string",
-    "datatype": "string"
-  }
-]
-```
-
-<h3 id="vdov1storagedatasetsget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<h3 id="vdov1storagedatasetsget-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[DataSetDTO](#schemadatasetdto)]|false|none|none|
-|» id|string(uuid)|false|none|none|
-|» createdate|string(date-time)|false|none|none|
-|» name|string|false|none|none|
-|» datatype|string|false|none|none|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## Create Empty Dataset
-
-<a id="opIdVdoV1StorageDatasetsPost"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X POST //vdo/v1/storage/datasets \
-  -H 'Content-Type: application/json-patch+json' \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-POST //vdo/v1/storage/datasets HTTP/1.1
-Host: null
-Content-Type: application/json-patch+json
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Content-Type':'application/json-patch+json',
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/datasets',
-  method: 'post',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-const inputBody = '{
-  "name": "string",
-  "datatype": "string"
-}';
-const headers = {
-  'Content-Type':'application/json-patch+json',
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/datasets',
-{
-  method: 'POST',
-  body: inputBody,
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Content-Type' => 'application/json-patch+json',
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.post '//vdo/v1/storage/datasets',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Content-Type': 'application/json-patch+json',
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.post('//vdo/v1/storage/datasets', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/datasets");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("POST");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Content-Type": []string{"application/json-patch+json"},
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("POST", "//vdo/v1/storage/datasets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`POST /vdo/v1/storage/datasets`
-
-*Create an empty dataset for future use of adding assets into it*
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "datatype": "string"
-}
-```
-
-<h3 id="vdov1storagedatasetspost-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|X-Api-Key|header|string|false|Your assigned application id|
-|body|body|[DataSetCreateRequest](#schemadatasetcreaterequest)|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "datatype": "string",
-  "name": "string"
-}
-```
-
-```json
-{
-  "id": "string",
-  "datatype": "string",
-  "name": "string"
-}
-```
-
-<h3 id="vdov1storagedatasetspost-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Unique identifier for dataset|[UniqueIdentifier](#schemauniqueidentifier)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Error: Dataset not created|None|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-## List Assets in a Dataset
-
-<a id="opIdVdoV1StorageDatasetsByDatasetidAssetsGet"></a>
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET //vdo/v1/storage/datasets/{datasetid}/assets \
-  -H 'Accept: text/plain'
-  -H 'Authorization: Bearer YOUR_TOKEN'
-  -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
-
-```
-
-```http
-GET //vdo/v1/storage/datasets/{datasetid}/assets HTTP/1.1
-Host: null
-
-Accept: text/plain
-X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN
-
-```
-
-```javascript
-var headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-$.ajax({
-  url: '//vdo/v1/storage/datasets/{datasetid}/assets',
-  method: 'get',
-
-  headers: headers,
-  success: function(data) {
-    console.log(JSON.stringify(data));
-  }
-})
-
-```
-
-```javascript--nodejs
-const request = require('node-fetch');
-
-const headers = {
-  'Accept':'text/plain',
-  'Authorization': 'Bearer YOUR_TOKEN',
-  'X-Api-Key':'string'
-
-};
-
-fetch('//vdo/v1/storage/datasets/{datasetid}/assets',
-{
-  method: 'GET',
-
-  headers: headers
-})
-.then(function(res) {
-    return res.json();
-}).then(function(body) {
-    console.log(body);
-});
-
-```
-
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'text/plain',
-  'Authorization' => 'Bearer YOUR_TOKEN',
-  'X-Api-Key' => 'string'
-}
-
-result = RestClient.get '//vdo/v1/storage/datasets/{datasetid}/assets',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-'Accept': 'text/plain',
-'Authorization' : 'Bearer YOUR_TOKEN',
-  'X-Api-Key': 'string'
-}
-
-r = requests.get('//vdo/v1/storage/datasets/{datasetid}/assets', params={
-
-}, headers = headers)
-
-print r.json()
-
-```
-
-```java
-URL obj = new URL("//vdo/v1/storage/datasets/{datasetid}/assets");
-HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-con.setRequestMethod("GET");
-int responseCode = con.getResponseCode();
-BufferedReader in = new BufferedReader(
-    new InputStreamReader(con.getInputStream()));
-String inputLine;
-StringBuffer response = new StringBuffer();
-while ((inputLine = in.readLine()) != null) {
-    response.append(inputLine);
-}
-in.close();
-System.out.println(response.toString());
-
-```
-
-```go
-package main
-
-import (
-       "bytes"
-       "net/http"
-)
-
-func main() {
-
-    headers := map[string][]string{
-        "Accept": []string{"text/plain"},
-		"Authorization": []string{"Bearer YOURTOKEN"},
-        "X-Api-Key": []string{"string"},
-        
-    }
-
-    data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "//vdo/v1/storage/datasets/{datasetid}/assets", data)
-    req.Header = headers
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    // ...
-}
-
-```
-
-`GET /vdo/v1/storage/datasets/{datasetid}/assets`
-
-*Return Assets associatted with a DataSet*
-
-<h3 id="vdov1storagedatasetsbydatasetidassetsget-parameters">Parameters</h3>
-
-|Parameter|In|Type|Required|Description|
-|---|---|---|---|---|
-|datasetid|path|string(uuid)|true|none|
-|X-Api-Key|header|string|false|Your assigned application id|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-```json
-[
-  {
-    "id": "string",
-    "createdate": "2018-05-15T17:51:34Z",
-    "updatedate": "2018-05-15T17:51:34Z",
-    "datatype": "string",
-    "name": "string"
-  }
-]
-```
-
-<h3 id="vdov1storagedatasetsbydatasetidassetsget-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
-
-<h3 id="vdov1storagedatasetsbydatasetidassetsget-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[AssetDTO](#schemaassetdto)]|false|none|none|
-|» id|string(uuid)|false|none|none|
-|» createdate|string(date-time)|false|none|none|
-|» updatedate|string(date-time)|false|none|none|
-|» datatype|string|false|none|none|
-|» name|string|false|none|none|
-
-<!--<aside class="success">
-This operation does not require authentication
-</aside>-->
-
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-WorkFlow">WorkFlow</h1>
+# WorkFlow
 
 ## List Avaliable Workflows
 
@@ -3615,7 +2880,6 @@ curl -X GET //vdo/v1/workflow \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -3823,7 +3087,6 @@ curl -X GET //vdo/v1/workflow/{workflowid} \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -4026,7 +3289,6 @@ curl -X GET //vdo/v1/workflow/{workflowid}/content \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -4217,7 +3479,7 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
-<h1 id="Vettd-Data-Observatory-VDO-API-Documentation-WorkFlowTemplate">WorkFlowTemplate</h1>
+# WorkFlowTemplate
 
 ## Select Template
 
@@ -4231,7 +3493,6 @@ curl -X GET //vdo/v1/templates \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -4462,7 +3723,6 @@ curl -X GET //vdo/v1/templates/{workflowtemplateid} \
   -H 'Accept: text/plain'
   -H 'Authorization: Bearer YOUR_TOKEN'
   -H 'X-Api-Key: string
-Authorization: Bearer YOUR_TOKEN'
 
 ```
 
@@ -4681,9 +3941,801 @@ func main() {
 This operation does not require authentication
 </aside>-->
 
+
+# Information
+
+## Ping
+
+<a id="opIdVdoV1InfoPingGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/info/ping \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/info/ping HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/info/ping',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/info/ping',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/info/ping',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/info/ping', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/info/ping");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/info/ping", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/info/ping`
+
+*Simple ping to see if API is alive*
+
+<h3 id="vdov1infopingget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="vdov1infopingget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+Ver## VdoV1InfoVersionGet
+
+<a id="opIdVdoV1InfoVersionGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/info/version \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/info/version HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/info/version',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/info/version',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/info/version',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/info/version', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/info/version");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/info/version", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/info/version`
+
+*Version number and release date of VDO API*
+
+<h3 id="vdov1infoversionget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "number": "string",
+  "release_date": "2018-05-15T17:51:34Z",
+  "lastRestartTime": "string",
+  "redisDBNumber": "string",
+  "environment": "string",
+  "token_information": {
+    "companyId": "string",
+    "userId": "string",
+    "auth0UserId": "string",
+    "issuer": "string",
+    "isUser": true,
+    "userEmail": "string",
+    "roles": [
+      "string"
+    ]
+  }
+}
+```
+
+```json
+{
+  "number": "string",
+  "release_date": "2018-05-15T17:51:34Z",
+  "lastRestartTime": "string",
+  "redisDBNumber": "string",
+  "environment": "string",
+  "token_information": {
+    "companyId": "string",
+    "userId": "string",
+    "auth0UserId": "string",
+    "issuer": "string",
+    "isUser": true,
+    "userEmail": "string",
+    "roles": [
+      "string"
+    ]
+  }
+}
+```
+
+<h3 id="vdov1infoversionget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ApplicationVersion](#schemaapplicationversion)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Version
+
+<a id="opIdVdoV1InfoVersionAdminGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/info/version/admin \
+  -H 'Accept: text/plain'
+  -H 'Authorization: Bearer YOUR_TOKEN'
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/info/version/admin HTTP/1.1
+Host: null
+
+Accept: text/plain
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/info/version/admin',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'Accept':'text/plain',
+  'Authorization': 'Bearer YOUR_TOKEN',
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/info/version/admin',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'text/plain',
+  'Authorization' => 'Bearer YOUR_TOKEN',
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/info/version/admin',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+'Accept': 'text/plain',
+'Authorization' : 'Bearer YOUR_TOKEN',
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/info/version/admin', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/info/version/admin");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"text/plain"},
+		"Authorization": []string{"Bearer YOURTOKEN"},
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/info/version/admin", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/info/version/admin`
+
+*Version number and release date of VDO API*
+
+<h3 id="vdov1infoversionadminget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "number": "string",
+  "release_date": "2018-05-15T17:51:34Z",
+  "lastRestartTime": "string",
+  "redisDBNumber": "string",
+  "environment": "string",
+  "token_information": {
+    "companyId": "string",
+    "userId": "string",
+    "auth0UserId": "string",
+    "issuer": "string",
+    "isUser": true,
+    "userEmail": "string",
+    "roles": [
+      "string"
+    ]
+  }
+}
+```
+
+```json
+{
+  "number": "string",
+  "release_date": "2018-05-15T17:51:34Z",
+  "lastRestartTime": "string",
+  "redisDBNumber": "string",
+  "environment": "string",
+  "token_information": {
+    "companyId": "string",
+    "userId": "string",
+    "auth0UserId": "string",
+    "issuer": "string",
+    "isUser": true,
+    "userEmail": "string",
+    "roles": [
+      "string"
+    ]
+  }
+}
+```
+
+<h3 id="vdov1infoversionadminget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ApplicationVersion](#schemaapplicationversion)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
+## Role Claims
+
+<a id="opIdVdoV1InfoClaimsGet"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET //vdo/v1/info/claims \
+  -H 'X-Api-Key: string
+
+```
+
+```http
+GET //vdo/v1/info/claims HTTP/1.1
+Host: null
+
+X-Api-Key: string
+Authorization: Bearer YOUR_TOKEN
+
+```
+
+```javascript
+var headers = {
+  'X-Api-Key':'string'
+
+};
+
+$.ajax({
+  url: '//vdo/v1/info/claims',
+  method: 'get',
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+```
+
+```javascript--nodejs
+const request = require('node-fetch');
+
+const headers = {
+  'X-Api-Key':'string'
+
+};
+
+fetch('//vdo/v1/info/claims',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'X-Api-Key' => 'string'
+}
+
+result = RestClient.get '//vdo/v1/info/claims',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'X-Api-Key': 'string'
+}
+
+r = requests.get('//vdo/v1/info/claims', params={
+
+}, headers = headers)
+
+print r.json()
+
+```
+
+```java
+URL obj = new URL("//vdo/v1/info/claims");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "X-Api-Key": []string{"string"},
+        
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "//vdo/v1/info/claims", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /vdo/v1/info/claims`
+
+<h3 id="vdov1infoclaimsget-parameters">Parameters</h3>
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Api-Key|header|string|false|Your assigned application id|
+
+<h3 id="vdov1infoclaimsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<!--<aside class="success">
+This operation does not require authentication
+</aside>-->
+
 # Schemas
 
-<h2 id="tocSfileresult">FileResult</h2>
+## AuthenicationResponse
+
+<a id="schemaauthenticate"></a>
+
+```json
+{
+    "access_token": "string",
+    "scope": "string",
+    "expires_in": "integer",
+    "token_type": "string"
+}
+
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|access_token|string|true|none|none|
+|scope|string|false|none|none|
+|expires_in|integer|true|read-only|none|
+|token_type|string(int32)|true|none|none|
+
+
+## FileResult
 
 <a id="schemafileresult"></a>
 
@@ -4715,7 +4767,7 @@ This operation does not require authentication
 |lastModified|string(date-time)|false|none|none|
 |entityTag|[EntityTagHeaderValue](#schemaentitytagheadervalue)|false|none|none|
 
-<h2 id="tocSentitytagheadervalue">EntityTagHeaderValue</h2>
+## EntityTagHeaderValue
 
 <a id="schemaentitytagheadervalue"></a>
 
@@ -4740,7 +4792,7 @@ This operation does not require authentication
 |tag|[StringSegment](#schemastringsegment)|false|none|none|
 |isWeak|boolean|false|read-only|none|
 
-<h2 id="tocSstringsegment">StringSegment</h2>
+## StringSegment
 
 <a id="schemastringsegment"></a>
 
@@ -4765,7 +4817,7 @@ This operation does not require authentication
 |value|string|false|read-only|none|
 |hasValue|boolean|false|read-only|none|
 
-<h2 id="tocSentitydatasaverequest">EntityDataSaveRequest</h2>
+## EntityDataSaveRequest
 
 <a id="schemaentitydatasaverequest"></a>
 
@@ -4794,7 +4846,7 @@ This operation does not require authentication
 |entity|[EntityData](#schemaentitydata)|false|none|none|
 |entityasset|[EntityData](#schemaentitydata)|false|none|none|
 
-<h2 id="tocSentitydata">EntityData</h2>
+## EntityData
 
 <a id="schemaentitydata"></a>
 
@@ -4813,7 +4865,7 @@ This operation does not require authentication
 |data|string|false|none|none|
 |type|string|false|none|none|
 
-<h2 id="tocSuniqueidentifier">UniqueIdentifier</h2>
+## UniqueIdentifier
 
 <a id="schemauniqueidentifier"></a>
 
@@ -4834,7 +4886,7 @@ This operation does not require authentication
 |datatype|string|false|none|none|
 |name|string|false|none|none|
 
-<h2 id="tocSentityresponse">EntityResponse</h2>
+## EntityResponse
 
 <a id="schemaentityresponse"></a>
 
@@ -4871,7 +4923,7 @@ This operation does not require authentication
 |createDate|string(date-time)|false|none|none|
 |entityAssets|[[EntityAssetResponse](#schemaentityassetresponse)]|false|none|none|
 
-<h2 id="tocSentityassetresponse">EntityAssetResponse</h2>
+## EntityAssetResponse
 
 <a id="schemaentityassetresponse"></a>
 
@@ -4896,7 +4948,7 @@ This operation does not require authentication
 |object|object|false|none|none|
 |createDate|string(date-time)|false|none|none|
 
-<h2 id="tocSapplicationversion">ApplicationVersion</h2>
+## ApplicationVersion
 
 <a id="schemaapplicationversion"></a>
 
@@ -4933,7 +4985,7 @@ This operation does not require authentication
 |environment|string|false|none|none|
 |token_information|[TokenInformation](#schematokeninformation)|false|none|none|
 
-<h2 id="tocStokeninformation">TokenInformation</h2>
+## TokenInformation
 
 <a id="schematokeninformation"></a>
 
@@ -4964,7 +5016,7 @@ This operation does not require authentication
 |userEmail|string|false|none|none|
 |roles|[string]|false|none|none|
 
-<h2 id="tocSjobrequest">JobRequest</h2>
+## JobRequest
 
 <a id="schemajobrequest"></a>
 
@@ -4990,7 +5042,7 @@ This operation does not require authentication
 |name|string|false|none|none|
 |parameters|[[JobParameter](#schemajobparameter)]|false|none|none|
 
-<h2 id="tocSjobparameter">JobParameter</h2>
+## JobParameter
 
 <a id="schemajobparameter"></a>
 
@@ -5009,7 +5061,7 @@ This operation does not require authentication
 |id|string(uuid)|false|none|none|
 |value|string|false|none|none|
 
-<h2 id="tocSjob">Job</h2>
+## Job
 
 <a id="schemajob"></a>
 
@@ -5062,7 +5114,7 @@ This operation does not require authentication
 |ouputvalue|string|false|none|none|
 |workFlow|[WorkFlow](#schemaworkflow)|false|none|none|
 
-<h2 id="tocSworkflow">WorkFlow</h2>
+## WorkFlow
 
 <a id="schemaworkflow"></a>
 
@@ -5095,7 +5147,7 @@ This operation does not require authentication
 |ispublished|boolean|false|none|none|
 |companyid|string(uuid)|false|none|none|
 
-<h2 id="tocSjobdetails">JobDetails</h2>
+## JobDetails
 
 <a id="schemajobdetails"></a>
 
@@ -5140,7 +5192,7 @@ This operation does not require authentication
 |job|[JobDTO](#schemajobdto)|false|none|none|
 |steps|[[JobFlowDTO](#schemajobflowdto)]|false|none|none|
 
-<h2 id="tocSjobdto">JobDTO</h2>
+## JobDTO
 
 <a id="schemajobdto"></a>
 
@@ -5176,7 +5228,7 @@ This operation does not require authentication
 |ouputypename|string|false|none|none|
 |ouputvalue|string|false|none|none|
 
-<h2 id="tocSjobflowdto">JobFlowDTO</h2>
+## JobFlowDTO
 
 <a id="schemajobflowdto"></a>
 
@@ -5209,7 +5261,7 @@ This operation does not require authentication
 |status|string|false|none|none|
 |stepid|string(uuid)|false|none|none|
 
-<h2 id="tocSworkflowtemplatedto">WorkFlowTemplateDTO</h2>
+## WorkFlowTemplateDTO
 
 <a id="schemaworkflowtemplatedto"></a>
 
@@ -5262,7 +5314,7 @@ This operation does not require authentication
 |iteratortype|1|
 |iteratortype|2|
 
-<h2 id="tocSworkflowiodto">WorkFlowIODTO</h2>
+## WorkFlowIODTO
 
 <a id="schemaworkflowiodto"></a>
 
@@ -5285,7 +5337,7 @@ This operation does not require authentication
 |typename|string|false|none|none|
 |iocounter|integer(int32)|false|none|none|
 
-<h2 id="tocStaskcomplete">TaskComplete</h2>
+## TaskComplete
 
 <a id="schemataskcomplete"></a>
 
@@ -5310,7 +5362,7 @@ This operation does not require authentication
 |dataType|string|false|none|none|
 |dataId|string|false|none|none|
 
-<h2 id="tocSassetdto">AssetDTO</h2>
+## AssetDTO
 
 <a id="schemaassetdto"></a>
 
@@ -5335,7 +5387,7 @@ This operation does not require authentication
 |datatype|string|false|none|none|
 |name|string|false|none|none|
 
-<h2 id="tocSiformfile">IFormFile</h2>
+## IFormFile
 
 <a id="schemaiformfile"></a>
 
@@ -5370,7 +5422,7 @@ This operation does not require authentication
 |name|string|false|read-only|none|
 |fileName|string|false|read-only|none|
 
-<h2 id="tocSassetuploadresponse">AssetUploadResponse</h2>
+## AssetUploadResponse
 
 <a id="schemaassetuploadresponse"></a>
 
@@ -5399,7 +5451,7 @@ This operation does not require authentication
 |datasetname|string|false|none|none|
 |assets|[[AssetDTO](#schemaassetdto)]|false|none|none|
 
-<h2 id="tocSdatasetdto">DataSetDTO</h2>
+## DataSetDTO
 
 <a id="schemadatasetdto"></a>
 
@@ -5422,7 +5474,7 @@ This operation does not require authentication
 |name|string|false|none|none|
 |datatype|string|false|none|none|
 
-<h2 id="tocSdatasetcreaterequest">DataSetCreateRequest</h2>
+## DataSetCreateRequest
 
 <a id="schemadatasetcreaterequest"></a>
 
@@ -5441,7 +5493,7 @@ This operation does not require authentication
 |name|string|false|none|none|
 |datatype|string|false|none|none|
 
-<h2 id="tocSclientasuser">ClientAsUser</h2>
+## ClientAsUser
 
 <a id="schemaclientasuser"></a>
 
@@ -5468,7 +5520,7 @@ This operation does not require authentication
 |email|string|false|none|none|
 |workflowids|[string]|false|none|none|
 
-<h2 id="tocSworkflowdto">WorkFlowDTO</h2>
+## WorkFlowDTO
 
 <a id="schemaworkflowdto"></a>
 
